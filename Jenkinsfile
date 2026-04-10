@@ -19,11 +19,14 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                sh 'npm install'
-                sh 'npm run build'
-            }
-        }
+    		steps {
+        		sh '''
+        		rm -rf node_modules package-lock.json
+        		npm install
+        		npm run build
+        		'''
+    		}
+	}
 
         stage('Test') {
             steps {
