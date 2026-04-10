@@ -16,8 +16,11 @@ echo 'is followed by another command that retrieves the process ID (PID) value'
 echo 'of the previously run process (i.e. "npm start") and writes this value to'
 echo 'the file ".pidfile".'
 set -x
-# Kill old process if running
-fuser -k 3000/tcp || true
+# Kill old process running on port 3000
+PID=$(lsof -ti:3000) || true
+if [ ! -z "$PID" ]; then
+  kill -9 $PID || true
+fi
 
 # Start app
 npm start &
