@@ -17,7 +17,7 @@ echo 'of the previously run process (i.e. "npm start") and writes this value to'
 echo 'the file ".pidfile".'
 set -x
 # Kill old process running on port 3000
-PID=$(lsof -ti:3000) || true
+PID=$(lsof -ti:3001) || true
 if [ ! -z "$PID" ]; then
   kill -9 $PID || true
 fi
