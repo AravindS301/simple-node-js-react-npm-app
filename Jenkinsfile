@@ -83,7 +83,7 @@ Jenkins
 
         failure {
             emailext(
-                to: 'yourmail@gmail.com',
+                to: 'aravindcrazzaravind@gmail.com',
                 subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """Hello,
 
