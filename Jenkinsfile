@@ -66,43 +66,47 @@ pipeline {
     post {
         success {
             emailext(
-                to: 'aravindcrazzaravind@gmail.com',
-                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """Hello,
+          pipeline {
+    agent any
 
-Build completed successfully.
+    stages {
 
-Job Name: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-Build URL: ${env.BUILD_URL}
-Docker Image: ${env.IMAGE_NAME}:${env.IMAGE_TAG}
-
-Thanks,
-Jenkins
-""",
-                attachLog: true
-            )
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
 
-        failure {
-            emailext(
-                to: 'aravindcrazzaravind@gmail.com',
-                subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """Hello,
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
 
-Build failed.
+        stage('Test') {
+            steps {
+                sh 'npm test || true'
+            }
+        }
 
-Job Name: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-Build URL: ${env.BUILD_URL}
+        stage('Deploy to Staging') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                sh 'echo "Deploying to Staging..."'
+            }
+        }
 
-Please check the Jenkins console log.
-
-Thanks,
-Jenkins
-""",
-                attachLog: true
-            )
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                input message: 'Approve Production Deployment?'
+                sh 'echo "Deploying to Production..."'
+            }
         }
     }
 }
