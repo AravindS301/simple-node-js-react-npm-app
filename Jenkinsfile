@@ -13,20 +13,19 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/AravindS301/simple-node-js-react-npm-app.git'
+                checkout scm
             }
         }
 
         stage('Build') {
-    		steps {
-        		sh '''
-        		rm -rf node_modules package-lock.json
-        		npm install
-        		npm run build
-        		'''
-    		}
-	}
+            steps {
+                sh '''
+                    rm -rf node_modules package-lock.json
+                    npm install
+                    npm run build
+                '''
+            }
+        }
 
         stage('Test') {
             steps {
@@ -54,42 +53,6 @@ pipeline {
             }
         }
 
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
-            }
-        }
-    }
-
-    post {
-        success {
-            emailext(
-          pipeline {
-    agent any
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm install'
-                sh 'npm run build'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'npm test || true'
-            }
-        }
-
         stage('Deploy to Staging') {
             when {
                 branch 'develop'
@@ -107,6 +70,23 @@ pipeline {
                 input message: 'Approve Production Deployment?'
                 sh 'echo "Deploying to Production..."'
             }
+        }
+
+        stage('Deliver') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline SUCCESS'
+        }
+        failure {
+            echo 'Pipeline FAILED'
         }
     }
 }
