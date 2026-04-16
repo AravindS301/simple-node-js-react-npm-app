@@ -7,7 +7,7 @@
     "react-dom": "^19.2.4"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run"
