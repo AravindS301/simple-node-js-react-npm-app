@@ -6,6 +6,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
-    allowedHosts: 'all'   // ✅ IMPORTANT FIX
+    allowedHosts: ['ab588abc4e9ca443eb697288f0819c3a-1968593748.ap-south-1.elb.amazonaws.com']
   }
 })
